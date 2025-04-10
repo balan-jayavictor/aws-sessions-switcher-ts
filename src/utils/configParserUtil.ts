@@ -8,6 +8,13 @@ import * as config from '../config';
  * Utilities for parsing and manipulating configuration files
  */
 
+function configToString(configParser: ConfigParser): string {
+  return configParser.sections().map(section => {
+    const items = configParser.items(section);
+    return `[${section}]\n${Object.entries(items).map(([k, v]) => `${k} = ${v}`).join('\n')}`;
+  }).join('\n\n');
+}
+
 export function replaceConfigSection(fileName: string, sectionName: string, sectionValue: Record<string, string>): void {
   try {
     const configParser = new ConfigParser();
@@ -21,7 +28,7 @@ export function replaceConfigSection(fileName: string, sectionName: string, sect
     });
     
     // Write back to file
-    fs.writeFileSync(fileName, configParser.stringify());
+    fs.writeFileSync(fileName, configToString(configParser));
   } catch (error) {
     errorLog(`There was a problem reading or parsing file: ${fileName}`, false);
     throw error;
@@ -61,7 +68,7 @@ export function getAwsAssumeConfigParser(): ConfigParser {
 
 export function replaceAwsAssumeConfig(configParserWithNewConfig: ConfigParser): void {
   try {
-    fs.writeFileSync(config.AWS_ASSUME_CONFIG_PATH, configParserWithNewConfig.stringify());
+    fs.writeFileSync(config.AWS_ASSUME_CONFIG_PATH, configToString(configParserWithNewConfig));
   } catch (error) {
     errorLog(`Failed to write to config file: ${config.AWS_ASSUME_CONFIG_PATH}`, false);
     throw error;
@@ -78,11 +85,7 @@ export function getAllProjects(): Record<string, config.ProjectEnvironmentConfig
     if (!section.startsWith('session-')) {
       const items = configParser.items(section);
       // Convert mfa_required string to boolean if necessary
-      if (items.mfa_required === 'True') {
-        items.mfa_required = true;
-      } else if (items.mfa_required === 'False') {
-        items.mfa_required = false;
-      }
+      items.mfa_required = String(items.mfa_required === 'true');
       
       projects[section] = items as unknown as config.ProjectEnvironmentConfig;
     }
@@ -127,7 +130,10 @@ export function switchToSession(sessionName: string | null): void {
   }
   
   // Replace the default profile in the AWS_CREDS file
-  replaceConfigSection(config.AWS_CREDS_PATH, 'default', allSessions[sessionName]);
+  const creds = Object.fromEntries(
+    Object.entries(allSessions[sessionName]).map(([k, v]) => [k, String(v)])
+  );
+  replaceConfigSection(config.AWS_CREDS_PATH, 'default', creds);
   console.log(`INFO: Switched to => \x1b[32m${sessionName}\x1b[0m`);
 }
 

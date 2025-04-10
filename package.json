@@ -29,6 +29,7 @@
   "author": "Balan Jayavictor",
   "license": "MIT",
   "devDependencies": {
+    "@types/inquirer": "^9.0.7",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.14.0",
     "@typescript-eslint/eslint-plugin": "^8.29.1",
@@ -45,7 +46,7 @@
     "commander": "^13.1.0",
     "configparser": "^0.3.10",
     "configstore": "^7.0.0",
-    "inquirer": "^12.5.2",
+    "inquirer": "8.2.5",
     "luxon": "^3.6.1"
   }
 }

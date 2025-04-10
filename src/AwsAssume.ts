@@ -188,8 +188,9 @@ export class AwsAssume {
 
     const newSession: Record<string, string> = {};
     
+    const creds = sessionCreds.Credentials as Record<string, any>;
     options.forEach(([k, v]) => {
-      newSession[k] = sessionCreds.Credentials?.[v] || '';
+      newSession[k] = creds?.[v] || '';
     });
     
     // Format expiration timestamp
@@ -284,7 +285,11 @@ export async function configure(writeMode = 'w', checkFileExistence = true): Pro
     fs.mkdirSync(dirPath, { recursive: true });
   }
   
-  fs.writeFileSync(config.AWS_ASSUME_CONFIG_PATH, cfgParser.stringify());
+  const configString = cfgParser.sections().map(section => {
+    const items = cfgParser.items(section);
+    return `[${section}]\n${Object.entries(items).map(([k, v]) => `${k} = ${v}`).join('\n')}`;
+  }).join('\n\n');
+  fs.writeFileSync(config.AWS_ASSUME_CONFIG_PATH, configString);
   
   console.log(yellowText(
     `Note: Make sure to put your security credentials under ` +

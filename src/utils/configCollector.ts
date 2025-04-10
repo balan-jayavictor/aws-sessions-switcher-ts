@@ -1,66 +1,66 @@
 import inquirer from 'inquirer';
-import { genericTextValidator, notEmpty, numbersOnly } from './validators';
-import { ProjectEnvironmentConfig } from '../config';
+import { notEmpty, numbersOnly } from './validators';
 
 /**
  * Classes for collecting configuration inputs from the user
  */
+
+interface ProjectEnvironmentConfig {
+  project_name: string;
+  project_environment: string;
+  role_arn: string;
+  role_name: string;
+  mfa_required: boolean;
+}
 
 export class ConfigCollector {
   private questions = [
     {
       type: 'input',
       name: 'project_name',
-      message: 'What\'s the project name?',
-      validate: genericTextValidator
-    },
-    {
-      type: 'input',
-      name: 'project_environment',
-      message: 'Type the environment identifier?',
-      validate: genericTextValidator
-    },
-    {
-      type: 'input',
-      name: 'role_arn',
-      message: 'Type the ARN of the AWS Role, you want to assume?'
-    },
-    {
-      type: 'input',
-      name: 'role_name',
-      message: 'Give a name to this role:',
-      validate: genericTextValidator
-    },
-    {
-      type: 'confirm',
-      name: 'mfa_required',
-      message: 'Is MFA Required?',
-      default: false
-    },
-    {
-      type: 'input',
-      name: 'mfa_device_arn',
-      message: 'Type the ARN of the MFA device?',
-      when: (answers: any) => answers.mfa_required,
+      message: 'Project name:',
       validate: notEmpty
     },
     {
       type: 'input',
-      name: 'mfa_device_session_duration',
-      message: 'Session duration in seconds? (Default: 3600)',
-      default: '3600',
-      when: (answers: any) => answers.mfa_required,
-      validate: numbersOnly
+      name: 'project_environment',
+      message: 'Environment name:',
+      validate: notEmpty
+    },
+    {
+      type: 'input',
+      name: 'role_arn',
+      message: 'Role ARN:',
+      validate: notEmpty
+    },
+    {
+      type: 'input',
+      name: 'role_name',
+      message: 'Role name:',
+      validate: notEmpty
+    },
+    {
+      type: 'confirm',
+      name: 'mfa_required',
+      message: 'MFA required?',
+      default: false
     }
   ];
 
-  async collect(): Promise<ProjectEnvironmentConfig | null> {
-    try {
-      return await inquirer.prompt(this.questions);
-    } catch (error) {
-      console.error('Error collecting configuration:', error);
-      return null;
-    }
+  async collect(): Promise<ProjectEnvironmentConfig> {
+    const answers = await inquirer.prompt(this.questions);
+    return answers as ProjectEnvironmentConfig;
+  }
+
+  async getSessionToSwitch(choices: string[]): Promise<string> {
+    const question = {
+      type: 'list',
+      name: 'session',
+      message: 'Select session to switch to:',
+      choices
+    };
+    const answers = await inquirer.prompt([question]);
+    return answers.session as string;
   }
 }
 
@@ -117,7 +117,7 @@ export class SelectionMenu {
         message: 'Select a session to switch to',
         name: 'switch_to_session',
         choices: this.prepareList(),
-        validate: (answer: string[]) => 
+        validate: (answer: string) => 
           answer.length === 0 ? 'You must choose at least one option.' : true
       }]);
 
