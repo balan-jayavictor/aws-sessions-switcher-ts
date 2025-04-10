@@ -1,6 +1,6 @@
 {
   "name": "aws-sessions-switcher",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A tool to help switching between multiple AWS environments easy and seamless",
   "type": "module",
   "main": "dist/index.js",

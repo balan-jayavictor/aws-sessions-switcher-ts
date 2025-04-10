@@ -1,3 +1,11 @@
+## [0.2.2](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.2.1...v0.2.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* STS service call ([e94efaa](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/e94efaa6bef80d45f4b03a0a6d79f6ccceda8cff))
+* STS service call ([0b18dd6](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/0b18dd654ca6cf8d9a6ec18d4afe0bab38553b0c))
+
 ## [0.2.1](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.2.0...v0.2.1) (2025-04-10)
 
 
