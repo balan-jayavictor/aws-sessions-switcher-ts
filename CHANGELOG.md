@@ -1,3 +1,16 @@
+# [0.2.0](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.1.0...v0.2.0) (2025-04-10)
+
+
+### Bug Fixes
+
+* jest config ([2d7d052](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/2d7d052d4709b5c6c058e697a3de78385d37116f))
+* linting ([b50c422](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/b50c422e20d56a76b4d105a0cf6de10c40df2859))
+
+
+### Features
+
+* Migrated the module to be ESM compatible ([8311741](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/83117411c5128fd290f9a693b8199d7db991cc65))
+
 # [0.1.0](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.0.1...v0.1.0) (2025-04-10)
 
 
