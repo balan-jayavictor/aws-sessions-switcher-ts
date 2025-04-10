@@ -14,7 +14,8 @@ import {
   yellowText, 
   printTable, 
   getSessionRow, 
-  getRemainingTime 
+  getRemainingTime,
+  debugLog
 } from './utils/formatting.js';
 
 /**
@@ -266,34 +267,40 @@ export async function configure(writeMode = 'w', checkFileExistence = true): Pro
   const collector = new configCollector.ConfigCollector();
   const answers = await collector.collect();
   
-  if (!answers) {
-    return;
+if (!answers) {
+  return;
+}
+  
+// First read existing configuration if it exists
+const existingConfigParser = new ConfigParser();
+if (fs.existsSync(config.AWS_ASSUME_CONFIG_PATH)) {
+  try {
+    existingConfigParser.read(config.AWS_ASSUME_CONFIG_PATH);
+  } catch (error) {
+    // If error reading config, we'll create a new one
+    debugLog(`Error reading existing config, creating new: ${error}`);
   }
+}
+
+// Create new section for the new project
+existingConfigParser.addSection(`${answers.project_name}-${answers.project_environment}`);
+Object.entries(answers).forEach(([key, value]) => {
+  existingConfigParser.set(`${answers.project_name}-${answers.project_environment}`, key, String(value));
+});
   
-  const cfgParser = new ConfigParser();
-  cfgParser.addSection(`${answers.project_name}-${answers.project_environment}`);
+const dirPath = path.dirname(config.AWS_ASSUME_CONFIG_PATH);
+if (!fs.existsSync(dirPath)) {
+  fs.mkdirSync(dirPath, { recursive: true });
+}
+
+// Use configParserUtil helper to write the config to preserve formatting
+configParserUtil.replaceAwsAssumeConfig(existingConfigParser);
   
-  Object.entries(answers).forEach(([key, value]) => {
-    cfgParser.set(`${answers.project_name}-${answers.project_environment}`, key, String(value));
-  });
-  
-  // Ensure directory exists
-  const dirPath = path.dirname(config.AWS_ASSUME_CONFIG_PATH);
-  if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true });
-  }
-  
-  const configString = cfgParser.sections().map(section => {
-    const items = cfgParser.items(section);
-    return `[${section}]\n${Object.entries(items).map(([k, v]) => `${k} = ${v}`).join('\n')}`;
-  }).join('\n\n');
-  fs.writeFileSync(config.AWS_ASSUME_CONFIG_PATH, configString);
-  
-  console.log(yellowText(
-    `Note: Make sure to put your security credentials under ` +
-    `"aws-sessions-switcher-${answers.project_name}" ` +
-    `section of your AWS Credentials`
-  ));
+console.log(yellowText(
+  `Note: Make sure to put your security credentials under ` +
+  `"aws-sessions-switcher-${answers.project_name}" ` +
+  `section of your AWS Credentials`
+));
 }
 
 /**

@@ -7,10 +7,8 @@ import { notEmpty, numbersOnly } from './validators.js';
 
 interface ProjectEnvironmentConfig {
   project_name: string;
-  project_environment?: string;
-  region: string;
-  aws_account_id: string;
-  role_arn?: string;
+  project_environment: string;
+  role_arn: string;
   role_name: string;
   mfa_required: boolean;
   mfa_device_arn?: string;
@@ -18,38 +16,6 @@ interface ProjectEnvironmentConfig {
 }
 
 export class ConfigCollector {
-  private questions = [
-    {
-      type: 'input',
-      name: 'project_name',
-      message: 'Project name:',
-      validate: notEmpty
-    },
-    {
-      type: 'input',
-      name: 'project_environment',
-      message: 'Environment name:',
-      validate: notEmpty
-    },
-    {
-      type: 'input',
-      name: 'role_arn',
-      message: 'Role ARN:',
-      validate: notEmpty
-    },
-    {
-      type: 'input',
-      name: 'role_name',
-      message: 'Role name:',
-      validate: notEmpty
-    },
-    {
-      type: 'confirm',
-      name: 'mfa_required',
-      message: 'MFA required?',
-      default: false
-    }
-  ];
 
   async collect(): Promise<ProjectEnvironmentConfig> {
     const result: Partial<ProjectEnvironmentConfig> = {};
@@ -59,24 +25,22 @@ export class ConfigCollector {
       message: 'Enter project name:',
       validate: notEmpty
     });
-    
-    // AWS region
-    result.region = await input({
-      message: 'AWS region:',
-      default: 'us-east-1',
+
+    // Project environment
+    result.project_environment = await input({
+      message: 'Environment id:',
       validate: notEmpty
     });
-    
-    // Account ID
-    result.aws_account_id = await input({
-      message: 'AWS account ID:',
-      validate: numbersOnly
+
+    // Role ARN
+    result.role_arn = await input({
+      message: 'Role ARN:',
+      validate: notEmpty
     });
     
     // Role name
     result.role_name = await input({
-      message: 'Role name:',
-      default: 'OrganizationAccountAccessRole',
+      message: 'Role name (friendly name):',
       validate: notEmpty
     });
     
