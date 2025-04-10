@@ -6,13 +6,13 @@ A TypeScript tool to help switching between multiple AWS environments easy and s
 
 ```bash
 # Using pnpm (recommended)
-pnpm add aws-sessions-switcher
+pnpm install -g aws-sessions-switcher
 
 # Or using npm
-npm install aws-sessions-switcher
+npm install -g aws-sessions-switcher
 
 # Or using yarn
-yarn add aws-sessions-switcher
+yarn global add aws-sessions-switcher
 ```
 
 ## Features
