@@ -60,6 +60,7 @@ export async function getStsCredentials(
   try {
     const baseCredentials = getBaseCredentialsForProject(projectName);
     const stsClient = new STSClient({
+      region: 'us-east-1',
       credentials: {
         accessKeyId: baseCredentials.key_id,
         secretAccessKey: baseCredentials.access_key
@@ -71,7 +72,7 @@ export async function getStsCredentials(
       RoleSessionName: sessionName,
       DurationSeconds: parseInt(projectConfig.mfa_device_session_duration || '3600'),
       SerialNumber: projectConfig.mfa_device_arn,
-      TokenCode: mfaToken
+      TokenCode: mfaToken,
     };
 
     const command = new AssumeRoleCommand(params);
@@ -96,6 +97,7 @@ export async function getStsCredentialsWithoutMfa(
   try {
     const baseCredentials = getBaseCredentialsForProject(projectName);
     const stsClient = new STSClient({
+      region: 'us-east-1',
       credentials: {
         accessKeyId: baseCredentials.key_id,
         secretAccessKey: baseCredentials.access_key

@@ -170,7 +170,8 @@ export class AwsAssume {
 
     let sessionCreds;
     
-    if (projectConfig.mfa_required === true || projectConfig.mfa_required === 'True') {
+    console.log(projectConfig);
+    if (projectConfig.mfa_required === "true") {
       const mfaDialog = new configCollector.InputDialog(
         `MFA TOKEN for device ${projectConfig.mfa_device_arn}`
       );

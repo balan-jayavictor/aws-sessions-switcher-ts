@@ -19,9 +19,13 @@ export function replaceConfigSection(fileName: string, sectionName: string, sect
   try {
     const configParser = new ConfigParser();
     configParser.read(fileName);
-    configParser.sections();
+    const sections = configParser.sections();
     
-    // Add or update the section
+    // Remove section if it already exists
+    if (sections.includes(sectionName)) {
+      configParser.removeSection(sectionName);
+    }
+    // Add the section with new values
     configParser.addSection(sectionName);
     Object.entries(sectionValue).forEach(([key, value]) => {
       configParser.set(sectionName, key, value);
