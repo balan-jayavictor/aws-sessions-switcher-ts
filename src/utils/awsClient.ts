@@ -60,7 +60,7 @@ export async function getStsCredentials(
   try {
     const baseCredentials = getBaseCredentialsForProject(projectName);
     const stsClient = new STSClient({
-      region: 'us-east-1',
+      region: process.env.AWS_REGION || 'us-east-1',
       credentials: {
         accessKeyId: baseCredentials.key_id,
         secretAccessKey: baseCredentials.access_key
@@ -97,7 +97,7 @@ export async function getStsCredentialsWithoutMfa(
   try {
     const baseCredentials = getBaseCredentialsForProject(projectName);
     const stsClient = new STSClient({
-      region: 'us-east-1',
+      region: process.env.AWS_REGION || 'us-east-1',
       credentials: {
         accessKeyId: baseCredentials.key_id,
         secretAccessKey: baseCredentials.access_key
