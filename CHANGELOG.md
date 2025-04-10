@@ -1,3 +1,10 @@
+## [0.2.1](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.2.0...v0.2.1) (2025-04-10)
+
+
+### Bug Fixes
+
+* configuration ([aa9d374](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/commit/aa9d3743e2959d9b20e71d4544a6379f374cff36))
+
 # [0.2.0](https://github.com/balan-jayavictor/aws-sessions-switcher-ts/compare/v0.1.0...v0.2.0) (2025-04-10)
 
 
