@@ -1,13 +1,12 @@
 import * as fs from 'fs';
-import * as os from 'os';
 import * as path from 'path';
 import { DateTime } from 'luxon';
 import ConfigParser from 'configparser';
-import * as config from './config';
-import { ProjectEnvironmentConfig, SessionCredentials } from './config';
-import * as awsClient from './utils/awsClient';
-import * as configParserUtil from './utils/configParserUtil';
-import * as configCollector from './utils/configCollector';
+import * as config from './config/index.js';
+import { ProjectEnvironmentConfig, SessionCredentials } from './config/index.js';
+import * as awsClient from './utils/awsClient.js';
+import * as configParserUtil from './utils/configParserUtil.js';
+import * as configCollector from './utils/configCollector.js';
 import { 
   infoLog, 
   errorLog, 
@@ -15,9 +14,8 @@ import {
   yellowText, 
   printTable, 
   getSessionRow, 
-  getAssumptionRow, 
   getRemainingTime 
-} from './utils/formatting';
+} from './utils/formatting.js';
 
 /**
  * Main class for AWS Session Switching functionality

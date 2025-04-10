@@ -1,6 +1,6 @@
 import * as os from 'os';
 import * as path from 'path';
-import { getVersion } from './version';
+import { getVersion } from './version.js';
 
 /**
  * Configuration constants for aws-sessions-switcher

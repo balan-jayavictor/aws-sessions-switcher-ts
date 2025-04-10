@@ -1,11 +1,11 @@
 // Export the main functionality
-import { AwsAssume, configure, validateConfigFile, performReset } from './AwsAssume';
-import * as configParserUtil from './utils/configParserUtil';
-import * as awsClient from './utils/awsClient';
-import * as formatting from './utils/formatting';
-import * as validators from './utils/validators';
-import { ConfigCollector, ConfirmationDialog, InputDialog, SelectionMenu } from './utils/configCollector';
-import { getVersion } from './config/version';
+import { AwsAssume, configure, validateConfigFile, performReset } from './AwsAssume.js';
+import * as configParserUtil from './utils/configParserUtil.js';
+import * as awsClient from './utils/awsClient.js';
+import * as formatting from './utils/formatting.js';
+import * as validators from './utils/validators.js';
+import { ConfigCollector, ConfirmationDialog, InputDialog, SelectionMenu } from './utils/configCollector.js';
+import { getVersion } from './config/version.js';
 
 // Export the main class and functions
 export {
@@ -25,4 +25,4 @@ export {
 };
 
 // Export types
-export * from './config';
+export * from './config/index.js';

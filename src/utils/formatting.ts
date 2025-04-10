@@ -1,3 +1,4 @@
+// Use modern ESM import for chalk
 import chalk from 'chalk';
 import { DateTime } from 'luxon';
 

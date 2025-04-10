@@ -1,5 +1,5 @@
 import { input, confirm, select } from '@inquirer/prompts';
-import { notEmpty, numbersOnly } from './validators';
+import { notEmpty, numbersOnly } from './validators.js';
 
 /**
  * Classes for collecting configuration inputs from the user

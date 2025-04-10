@@ -3,9 +3,9 @@ import {
   AssumeRoleCommand, 
   AssumeRoleCommandInput 
 } from '@aws-sdk/client-sts';
-import { ProjectEnvironmentConfig } from '../config';
-import { debugLog, errorLog, getBaseAwsProfileForProject } from './formatting';
-import { getAwsCredsParser } from './configParserUtil';
+import { ProjectEnvironmentConfig } from '../config/index.js';
+import { debugLog, errorLog, getBaseAwsProfileForProject } from './formatting.js';
+import { getAwsCredsParser } from './configParserUtil.js';
 
 /**
  * Utilities for interacting with AWS services

@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import ConfigParser from 'configparser';
-import { errorLog, isSessionExpired } from './formatting';
-import * as config from '../config';
+import { errorLog, isSessionExpired } from './formatting.js';
+import * as config from '../config/index.js';
 
 /**
  * Utilities for parsing and manipulating configuration files

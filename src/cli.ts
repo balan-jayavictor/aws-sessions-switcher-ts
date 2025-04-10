@@ -1,12 +1,13 @@
 #!/usr/bin/env node
+// ESM syntax
 
 import { Command } from 'commander';
-import { AwsAssume, configure, validateConfigFile, performReset } from './AwsAssume';
-import { getVersion } from './config/version';
-import { SelectionMenu, ConfirmationDialog } from './utils/configCollector'; 
-import { greenText, yellowText } from './utils/formatting';
-import { switchToSession } from './utils/configParserUtil';
-import * as config from './config';
+import { AwsAssume, configure, validateConfigFile, performReset } from './AwsAssume.js';
+import { getVersion } from './config/version.js';
+import { SelectionMenu, ConfirmationDialog } from './utils/configCollector.js'; 
+import { yellowText } from './utils/formatting.js';
+import { switchToSession } from './utils/configParserUtil.js';
+// Import config only when needed
 
 // Create a new instance of AwsAssume
 const awsAssume = new AwsAssume();
@@ -149,8 +150,8 @@ function addDynamicProjectCommands() {
       const envs = awsAssume.listProjectEnvironments(project, false);
 
       for (const env of envs) {
-        const envCmd = projectCmd.command(env);
         const roles = awsAssume.listRoles(project, env, false);
+        const envCmd = projectCmd.command(env);
 
         for (const role of roles) {
           envCmd.command(role)
@@ -160,8 +161,8 @@ function addDynamicProjectCommands() {
         }
 
         // If no role specified, show available roles
-        envCmd.action(() => {
-          awsAssume.listRoles(project, env, true);
+        envCmd.action(async () => {
+          await awsAssume.listRoles(project, env, true);
         });
       }
 
@@ -179,11 +180,11 @@ function addDynamicProjectCommands() {
 addDynamicProjectCommands();
 
 // Default action - list assumptions
-program.action((cmd) => {
+program.action(async (cmd) => {
   if (cmd.list || !process.argv.slice(2).length) {
     try {
       validateConfigFile();
-      const allConfig = awsAssume.getAllProjectsConfig();
+      const allConfig = await awsAssume.getAllProjectsConfig();
       
       const configDetails = Object.entries(allConfig).map(([, details]) => {
         return {
@@ -199,12 +200,14 @@ program.action((cmd) => {
       ]);
       
       if (rows.length > 0) {
-        require('./utils/formatting').printTable(headers, rows);
+        // Use imported function instead of require
+        (await import('./utils/formatting.js')).printTable(headers, rows);
       } else {
         console.log(yellowText('No AWS role assumptions configured. Run `aws-sessions-switcher configure` to set up.'));
       }
     } catch (error) {
       // Handle configuration error
+      console.error('Error listing AWS configurations:', error);
     }
   }
 });
