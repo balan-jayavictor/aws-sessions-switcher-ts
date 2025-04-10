@@ -1,0 +1,51 @@
+{
+  "name": "aws-sessions-switcher",
+  "version": "1.0.0",
+  "description": "A tool to help switching between multiple AWS environments easy and seamless",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "aws-sessions-switcher": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --ext .ts",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "start": "node dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DEV-BALAN-JAYAVICTOR/aws-sessions-switcher.git"
+  },
+  "keywords": [
+    "aws",
+    "authentication",
+    "cli",
+    "sessions",
+    "profiles"
+  ],
+  "author": "Balan Jayavictor",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
+    "eslint": "^9.24.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-sts": "^3.782.0",
+    "@types/luxon": "^3.6.2",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "configparser": "^0.3.10",
+    "configstore": "^7.0.0",
+    "inquirer": "^12.5.2",
+    "luxon": "^3.6.1"
+  }
+}
