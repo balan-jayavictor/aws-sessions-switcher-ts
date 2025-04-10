@@ -41,12 +41,13 @@
   },
   "dependencies": {
     "@aws-sdk/client-sts": "^3.782.0",
+    "@inquirer/prompts": "^7.4.1",
     "@types/luxon": "^3.6.2",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "configparser": "^0.3.10",
     "configstore": "^7.0.0",
-    "inquirer": "8.2.5",
+    "inquirer": "12.5.2",
     "luxon": "^3.6.1"
   }
 }

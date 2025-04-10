@@ -1,4 +1,4 @@
-import inquirer from 'inquirer';
+import { input, confirm, select } from '@inquirer/prompts';
 import { notEmpty, numbersOnly } from './validators';
 
 /**
@@ -7,10 +7,14 @@ import { notEmpty, numbersOnly } from './validators';
 
 interface ProjectEnvironmentConfig {
   project_name: string;
-  project_environment: string;
-  role_arn: string;
+  project_environment?: string;
+  region: string;
+  aws_account_id: string;
+  role_arn?: string;
   role_name: string;
   mfa_required: boolean;
+  mfa_device_arn?: string;
+  mfa_device_session_duration?: string;
 }
 
 export class ConfigCollector {
@@ -48,56 +52,101 @@ export class ConfigCollector {
   ];
 
   async collect(): Promise<ProjectEnvironmentConfig> {
-    const answers = await inquirer.prompt(this.questions);
-    return answers as ProjectEnvironmentConfig;
+    const result: Partial<ProjectEnvironmentConfig> = {};
+    
+    // Project name
+    result.project_name = await input({
+      message: 'Enter project name:',
+      validate: notEmpty
+    });
+    
+    // AWS region
+    result.region = await input({
+      message: 'AWS region:',
+      default: 'us-east-1',
+      validate: notEmpty
+    });
+    
+    // Account ID
+    result.aws_account_id = await input({
+      message: 'AWS account ID:',
+      validate: numbersOnly
+    });
+    
+    // Role name
+    result.role_name = await input({
+      message: 'Role name:',
+      default: 'OrganizationAccountAccessRole',
+      validate: notEmpty
+    });
+    
+    // MFA required
+    result.mfa_required = await confirm({
+      message: 'MFA required:',
+      default: false
+    });
+    
+    // MFA device ARN (only if MFA is required)
+    if (result.mfa_required) {
+      result.mfa_device_arn = await input({
+        message: 'MFA device ARN:',
+        validate: notEmpty
+      });
+      
+      result.mfa_device_session_duration = await input({
+        message: 'Session duration in seconds? (Default: 3600)',
+        default: '3600',
+        validate: numbersOnly
+      });
+    }
+    
+    return result as ProjectEnvironmentConfig;
   }
 
   async getSessionToSwitch(choices: string[]): Promise<string> {
-    const question = {
-      type: 'list',
-      name: 'session',
+    return await select({
       message: 'Select session to switch to:',
-      choices
-    };
-    const answers = await inquirer.prompt([question]);
-    return answers.session as string;
+      choices: choices.map(choice => ({ value: choice, name: choice }))
+    });
   }
 }
 
 export class ConfirmationDialog {
-  constructor(private question: string) {}
+  private defaultValue: boolean;
+  constructor(private question: string, defaultValue: boolean = false) {
+    this.defaultValue = defaultValue;
+  }
 
   async getAnswer(): Promise<boolean> {
     try {
-      const answers = await inquirer.prompt([{
-        type: 'confirm',
-        name: 'confirmation',
+      return await confirm({
         message: this.question,
-        default: false
-      }]);
-      return answers.confirmation;
+        default: this.defaultValue
+      });
     } catch (error) {
-      console.error('Error in confirmation dialog:', error);
+      console.error('Error confirming choice:', error);
       return false;
     }
   }
 }
 
 export class InputDialog {
-  constructor(private question: string) {}
+  private defaultValue: string;
+  private validator: (input: string) => true | string;
+  constructor(private question: string, defaultValue: string = '', validator: (input: string) => true | string = () => true) {
+    this.defaultValue = defaultValue;
+    this.validator = validator;
+  }
 
   async getAnswer(): Promise<string> {
     try {
-      const answers = await inquirer.prompt([{
-        type: 'input',
-        name: 'value',
+      return await input({
         message: this.question,
-        default: '',
-        validate: numbersOnly
-      }]);
-      return answers.value;
+        default: this.defaultValue,
+        validate: this.validator
+      });
     } catch (error) {
-      console.error('Error in input dialog:', error);
+      console.error('Error getting input:', error);
       return '';
     }
   }
@@ -106,24 +155,21 @@ export class InputDialog {
 export class SelectionMenu {
   constructor(private choices: string[]) {}
 
-  private prepareList(): { name: string, value: string }[] {
-    return this.choices.map(x => ({ name: x, value: x }));
+  private prepareList() {
+    return this.choices.map(choice => ({
+      name: choice,
+      value: choice
+    }));
   }
 
   async getAnswer(): Promise<string | null> {
     try {
-      const answers = await inquirer.prompt([{
-        type: 'list',
+      return await select({
         message: 'Select a session to switch to',
-        name: 'switch_to_session',
-        choices: this.prepareList(),
-        validate: (answer: string) => 
-          answer.length === 0 ? 'You must choose at least one option.' : true
-      }]);
-
-      return answers.switch_to_session;
+        choices: this.prepareList()
+      });
     } catch (error) {
-      console.error('Error in selection menu:', error);
+      console.error('Error getting selection:', error);
       return null;
     }
   }
